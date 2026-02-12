@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
 import { createSupabaseClient } from '@/lib/supabaseClient'
 
-export default function LoginPage() {
+export default function DoctorLoginPage() {
   const [session, setSession] = useState<Session | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -54,7 +54,7 @@ export default function LoginPage() {
       password,
       options: {
         data: {
-          user_type: 'patient',
+          user_type: 'doctor',
         },
       },
     })
@@ -72,9 +72,9 @@ export default function LoginPage() {
     return (
       <main className="min-h-screen flex items-center justify-center bg-background">
         <div className="w-full max-w-md space-y-4 rounded-xl border bg-card p-6 shadow-sm text-center">
-          <h1 className="text-2xl font-semibold">You are signed in</h1>
+          <h1 className="text-2xl font-semibold">Doctor portal</h1>
           <p className="text-sm text-muted-foreground">
-            Email: {session.user.email}
+            Signed in as: {session.user.email}
           </p>
           <button
             type="button"
@@ -91,11 +91,11 @@ export default function LoginPage() {
   return (
     <main className="min-h-screen flex items-center justify-center bg-background">
       <div className="w-full max-w-md space-y-6 rounded-xl border bg-card p-6 shadow-sm">
-        <h1 className="text-2xl font-semibold text-center">Log in</h1>
+        <h1 className="text-2xl font-semibold text-center">Doctor login</h1>
         <form className="space-y-4" onSubmit={handleSignIn}>
           <div className="space-y-2">
             <label className="block text-sm font-medium" htmlFor="email">
-              Email
+              Work email
             </label>
             <input
               id="email"
@@ -136,7 +136,7 @@ export default function LoginPage() {
           disabled={loading}
           className="w-full rounded-md border px-4 py-2 text-sm font-medium hover:bg-accent disabled:opacity-50"
         >
-          {loading ? 'Creating account...' : 'Sign up'}
+          {loading ? 'Creating doctor account...' : 'Sign up as doctor'}
         </button>
       </div>
     </main>
