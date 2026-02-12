@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from 'react'
 import type { Session } from '@supabase/supabase-js'
+import { useRouter } from 'next/navigation'
 import { createSupabaseClient } from '@/lib/supabaseClient'
 
 export default function LoginPage() {
+  const router = useRouter()
   const [session, setSession] = useState<Session | null>(null)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -35,12 +37,35 @@ export default function LoginPage() {
     setError(null)
     const supabase = createSupabaseClient()
 
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     })
 
-    if (error) setError(error.message)
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    // Optional: create a dummy appointment for verification
+    try {
+      if (data.session?.user.id) {
+        await supabase.from('appointments').insert({
+          patient_id: data.session.user.id,
+          doctor_id: data.session.user.id,
+          title: 'Demo appointment',
+          description: 'Automatically created to verify Supabase connectivity.',
+          scheduled_at: new Date().toISOString(),
+        })
+      }
+    } catch {
+      // Ignore demo insert failures
+    }
+
+    // Redirect to integrated dashboard page
+    router.push('/dashboard')
+
     setLoading(false)
   }
 
@@ -49,7 +74,7 @@ export default function LoginPage() {
     setError(null)
     const supabase = createSupabaseClient()
 
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -59,7 +84,29 @@ export default function LoginPage() {
       },
     })
 
-    if (error) setError(error.message)
+    if (error) {
+      setError(error.message)
+      setLoading(false)
+      return
+    }
+
+    // Optional: create a dummy appointment for verification
+    try {
+      if (data.session?.user.id) {
+        await supabase.from('appointments').insert({
+          patient_id: data.session.user.id,
+          doctor_id: data.session.user.id,
+          title: 'Demo appointment',
+          description: 'Automatically created to verify Supabase connectivity.',
+          scheduled_at: new Date().toISOString(),
+        })
+      }
+    } catch {
+      // Ignore demo insert failures
+    }
+
+    router.push('/dashboard')
+
     setLoading(false)
   }
 
