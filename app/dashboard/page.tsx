@@ -14,6 +14,8 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { LayoutDashboard, CalendarDays, CalendarCheck, XCircle, Plus } from 'lucide-react'
+import { DepartmentsPanel } from '@/components/DepartmentsPanel'
 import { APPOINTMENTS, type AppointmentStatus } from '@/lib/appointments-data'
 
 const statusLabel: Record<AppointmentStatus, string> = {
@@ -55,44 +57,68 @@ export default function DashboardPage() {
   )
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen bg-white">
       <div className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 px-6 py-10">
         <header className="mb-2 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-tight">MedEz dashboard</h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              View your upcoming and past appointments, then drill into prescriptions.
-            </p>
+          <div className="flex items-center gap-4">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-sky-100 text-sky-600">
+              <LayoutDashboard className="h-6 w-6" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-800">MedEz dashboard</h1>
+              <p className="mt-1 text-sm text-slate-600">
+                View your upcoming and past appointments, then drill into prescriptions.
+              </p>
+            </div>
           </div>
+          <Link
+            href="/appointments/create"
+            className="inline-flex items-center gap-2 rounded-lg bg-sky-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-sky-600"
+          >
+            <Plus className="h-4 w-4" />
+            Create appointment
+          </Link>
         </header>
 
         <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border bg-card p-4 shadow-sm">
-            <p className="text-xs font-medium text-muted-foreground uppercase">
-              Scheduled
-            </p>
-            <p className="mt-2 text-2xl font-semibold">{counts.scheduled}</p>
+          <div className="rounded-xl border-2 border-sky-200 bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
+            <div className="flex items-center gap-2">
+              <CalendarDays className="h-5 w-5 text-sky-600" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Scheduled
+              </p>
+            </div>
+            <p className="mt-3 text-3xl font-bold text-slate-800">{counts.scheduled}</p>
           </div>
-          <div className="rounded-xl border bg-card p-4 shadow-sm">
-            <p className="text-xs font-medium text-muted-foreground uppercase">
-              Completed
-            </p>
-            <p className="mt-2 text-2xl font-semibold">{counts.completed}</p>
+          <div className="rounded-xl border-2 border-emerald-200 bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
+            <div className="flex items-center gap-2">
+              <CalendarCheck className="h-5 w-5 text-emerald-600" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Completed
+              </p>
+            </div>
+            <p className="mt-3 text-3xl font-bold text-slate-800">{counts.completed}</p>
           </div>
-          <div className="rounded-xl border bg-card p-4 shadow-sm">
-            <p className="text-xs font-medium text-muted-foreground uppercase">
-              Cancelled
-            </p>
-            <p className="mt-2 text-2xl font-semibold">{counts.cancelled}</p>
+          <div className="rounded-xl border-2 border-rose-200 bg-white p-5 shadow-md transition-shadow hover:shadow-lg">
+            <div className="flex items-center gap-2">
+              <XCircle className="h-5 w-5 text-rose-600" />
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-700">
+                Cancelled
+              </p>
+            </div>
+            <p className="mt-3 text-3xl font-bold text-slate-800">{counts.cancelled}</p>
           </div>
         </section>
 
         <section className="grid gap-6 md:grid-cols-[1.3fr,1fr]">
-          <div className="rounded-xl border bg-card p-4 shadow-sm">
+          <div className="rounded-xl border-2 border-sky-200 bg-white p-5 shadow-md">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="text-base font-medium">Appointments</h2>
+              <div className="flex items-center gap-2">
+                <CalendarDays className="h-5 w-5 text-sky-600" />
+                <h2 className="text-base font-semibold text-slate-800">Appointments</h2>
+              </div>
               {selectedDate && (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-600">
                   Showing appointments for{' '}
                   {selectedDate.toLocaleDateString(undefined, {
                     weekday: 'short',
@@ -143,8 +169,11 @@ export default function DashboardPage() {
             </Table>
           </div>
 
-          <div className="rounded-xl border bg-card p-4 shadow-sm">
-            <h2 className="mb-3 text-base font-medium">Calendar</h2>
+          <div className="rounded-xl border-2 border-sky-200 bg-white p-5 shadow-md">
+            <div className="mb-3 flex items-center gap-2">
+              <CalendarCheck className="h-5 w-5 text-sky-600" />
+              <h2 className="text-base font-semibold text-slate-800">Calendar</h2>
+            </div>
             <Calendar
               mode="single"
               selected={selectedDate}
@@ -156,6 +185,8 @@ export default function DashboardPage() {
             />
           </div>
         </section>
+
+        <DepartmentsPanel />
       </div>
     </main>
   )
