@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import OpenAI from "openai"
+import { extractEntities, type ExtractedEntity } from "@/lib/extract-entities"
 
 const ALLOWED_TYPES = new Set([
   "audio/mpeg",       // mp3
@@ -58,6 +59,7 @@ export async function POST(request: Request) {
     // Optional parameters
     const language = formData.get("language") as string | null
     const prompt = formData.get("prompt") as string | null
+    const shouldExtractEntities = formData.get("extractEntities") === "true"
 
     // Call OpenAI Whisper API
     const openai = new OpenAI({ apiKey })
@@ -69,7 +71,16 @@ export async function POST(request: Request) {
       ...(prompt ? { prompt } : {}),
     })
 
-    return NextResponse.json({ text: transcription.text })
+    // Optionally extract entities from the transcription
+    let entities: ExtractedEntity[] | undefined
+    if (shouldExtractEntities && transcription.text) {
+      entities = await extractEntities(transcription.text)
+    }
+
+    return NextResponse.json({
+      text: transcription.text,
+      ...(entities ? { entities } : {}),
+    })
   } catch (err: unknown) {
     // Surface OpenAI-specific errors
     if (err instanceof OpenAI.APIError) {
